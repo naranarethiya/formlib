@@ -11,10 +11,10 @@ With Form Model Binding, your edit forms are automatically populated based on th
 
 First i see this feature in laravel  [here](https://laravel.com/docs/4.2/html#form-model-binding), Its awesome feature you just need pass the database result object and formLibrary automatically fill the form input. Mostly for quick development purpose i preper codeigniter so here is stand alone solution for formModel binding.
 
-## Inherited from
+## Inherited from Codeigniter
 I Fill more comfitable with codeigniter, codeigniter has [formHelper library](https://www.codeigniter.com/userguide3/helpers/form_helper.html) which full fill all form generation needs, so i just copy the form library and modify it according to needs. this library inherited from codeiniter form_helper so no need for detailed documentation you can view detailed documentation form [form_helper here](https://www.codeigniter.com/userguide3/helpers/form_helper.html). I given more focus to input name so every function's first argument contain input name here is example. 
-	required_once('Form.php');
-	$form=new Form();
+	`required_once('Form.php');
+	$form=new Form();`
 
 	$data = array(
 		        'id'            => 'username',
@@ -38,6 +38,8 @@ For more detail usage checkout the examples in example folder
 
 function | Description | Example 
 ---------|-------------|---------
-form_model([$model_array=array() [, $action = ''[, $attributes = array()[, $hidden = array()]]]])| An HTML multipart form opening tag with model binding initializing | $form->form_model('submit.php');
+form_model([$model_array=array() [, $action = ''[, $attributes = array()[, $hidden = array()]]]])| An HTML multipart form opening tag with model binding initializing | $form->form_model($model_array,'submit.php');
 form_country_dropdown($name, $selected = array(), $option = '',  $extra = '', $multiple=false)|Generate Country dropdown/ Select list| $form('country','',array('class'=>'form-control'))
 form_dropdown_fromdatabase($name,$option_list,$key,$value,$selected=false,$other=false,$defaultoption="SELECT") | Generate Select box directly from database array result| $form->form_dropdown_fromdatabase('users_list',$database_array,'user_id','username','', array('class'=>'form-control'))
+
+Its highly Recommened to read codeiniter documentation for form_helper from [HERE](https://www.codeigniter.com/userguide3/helpers/form_helper.html)

@@ -1,0 +1,42 @@
+#datatable-search {
+	margin-top:3px;
+}
+#full-height-datatable_filter, .full-height-datatable_filter {
+	display: none;
+}
+
+.box-widget span.description i {
+	margin-left: 20px;
+}
+
+.box-widget span.description i:first-child {
+	margin-left: 0;
+}
+
+.dl-horizontal dd {
+	word-wrap: break-word;
+}
+
+.color-indicator {
+    width: 15px ! important;
+    height: 15px ! important;
+    margin-left: 5px;
+    display: inline-block;
+}
+
+.profile-user-img {
+	cursor: pointer;
+}
+
+.paginations a,.paginations strong  {
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #428bca;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+.cursor-move {
+    cursor: move;
+}
