@@ -1,7 +1,6 @@
 <?php
 class Form {
-
-	public $model_array=false;
+public $model_array=false;
 	/**
 	 * Form Declaration
 	 *
@@ -14,19 +13,7 @@ class Form {
 	 */
 	function form_open($action = '', $attributes = array(), $hidden = array())
 	{
-		$CI =& get_instance();
-
-		// If no action is provided then set to the current url
-		if ( ! $action)
-		{
-			$action = $CI->config->site_url($CI->uri->uri_string());
-		}
-		// If an action is not a full URL then turn it into one
-		elseif (strpos($action, '://') === FALSE)
-		{
-			$action = $CI->config->site_url($action);
-		}
-
+		/*$CI =& get_instance();*/
 		$attributes = $this->_attributes_to_string($attributes);
 
 		if (stripos($attributes, 'method=') === FALSE)
@@ -34,24 +21,24 @@ class Form {
 			$attributes .= ' method="post"';
 		}
 
-		if (stripos($attributes, 'accept-charset=') === FALSE)
+		/*if (stripos($attributes, 'accept-charset=') === FALSE)
 		{
 			$attributes .= ' accept-charset="'.strtolower(config_item('charset')).'"';
-		}
+		}*/
 
 		$form = '<form action="'.$action.'"'.$attributes.">\n";
 
 		// Add CSRF field if enabled, but leave it out for GET requests and requests to external websites
-		if ($CI->config->item('csrf_protection') === TRUE && strpos($action, $CI->config->base_url()) !== FALSE && ! stripos($form, 'method="get"'))
+		/*if ($CI->config->item('csrf_protection') === TRUE && strpos($action, $CI->config->base_url()) !== FALSE && ! stripos($form, 'method="get"'))
 		{
 			$hidden[$CI->security->get_csrf_token_name()] = $CI->security->get_csrf_hash();
-		}
+		}*/
 
 		if (is_array($hidden))
 		{
 			foreach ($hidden as $name => $value)
 			{
-				$form .= '<input type="hidden" name="'.$name.'" value="'.html_escape($value).'" style="display:none;" />'."\n";
+				$form .= '<input type="hidden" name="'.$name.'" value="'.$this->html_escape($value).'" style="display:none;" />'."\n";
 			}
 		}
 
@@ -64,7 +51,6 @@ class Form {
 	 *
 	 * Creates the opening portion of the form.
 	 *
-	 * @param   array model array to fill control
 	 * @param	string	the URI segments of the form destination
 	 * @param	array	a key/value pair of attributes
 	 * @param	array	a key/value pair hidden data
@@ -148,7 +134,7 @@ class Form {
 				$value=$model_value;
 			}
 					
-			$form .= '<input type="hidden" name="'.$name.'" value="'.html_escape($value)."\" />\n";
+			$form .= '<input type="hidden" name="'.$name.'" value="'.$this->html_escape($value)."\" />\n";
 		}
 		else
 		{
@@ -174,7 +160,6 @@ class Form {
 	/**
 	 * Text Input Field
 	 *
-	 * @param   String
 	 * @param	mixed
 	 * @param	string
 	 * @param	mixed
@@ -196,11 +181,14 @@ class Form {
 			$data['name']=$name;
 		}
 		
-		/* Set model value  */
-		$model_value=$this->set_model_value($name);
-		if(!empty($model_value) && empty($value)) {
-			$data['value']=$model_value;
+		/* Set model value, But dont fill value for password field  */
+		if(!isset($data['type']) || $data['type']!='password') {
+			$model_value=$this->set_model_value($name);
+			if(!empty($model_value) && empty($value)) {
+				$data['value']=$model_value;
+			}
 		}
+		
 
 		return '<input '.$this->_parse_form_attributes($data, $defaults).$this->_attributes_to_string($extra)." />\n";
 	}
@@ -213,7 +201,6 @@ class Form {
 	 *
 	 * Identical to the input function but adds the "password" type
 	 *
-	 * @param   string
 	 * @param	mixed
 	 * @param	string
 	 * @param	mixed
@@ -234,7 +221,6 @@ class Form {
 	 *
 	 * Identical to the input function but adds the "file" type
 	 *
-	 * @param   string
 	 * @param	mixed
 	 * @param	string
 	 * @param	mixed
@@ -260,7 +246,6 @@ class Form {
 	/**
 	 * Textarea field
 	 *
-	 * @param   string
 	 * @param	mixed	$data
 	 * @param	string	$value
 	 * @param	mixed	$extra
@@ -296,7 +281,7 @@ class Form {
 		}
 
 		return '<textarea '.$this->_parse_form_attributes($data, $defaults).$this->_attributes_to_string($extra).'>'
-			.html_escape($val)
+			.$this->html_escape($val)
 			."</textarea>\n";
 	}
 
@@ -330,7 +315,6 @@ class Form {
 	/**
 	 * Drop-down Menu
 	 *
-	 * @param   string  $name
 	 * @param	mixed	$data
 	 * @param	mixed	$options
 	 * @param	mixed	$selected
@@ -415,7 +399,7 @@ class Form {
 				foreach ($val as $optgroup_key => $optgroup_val)
 				{
 					$sel = in_array($optgroup_key, $selected) ? ' selected="selected"' : '';
-					$form .= '<option value="'.html_escape($optgroup_key).'"'.$sel.'>'
+					$form .= '<option value="'.$this->html_escape($optgroup_key).'"'.$sel.'>'
 						.(string) $optgroup_val."</option>\n";
 				}
 
@@ -423,7 +407,7 @@ class Form {
 			}
 			else
 			{
-				$form .= '<option value="'.html_escape($key).'"'
+				$form .= '<option value="'.$this->html_escape($key).'"'
 					.(in_array($key, $selected) ? ' selected="selected"' : '').'>'
 					.(string) $val."</option>\n";
 			}
@@ -433,15 +417,6 @@ class Form {
 	}
 //----------------------------------------------------------------------
 
-	/**
-	 * Drop-down Menu
-	 *
-	 * @param	mixed	$data
-	 * @param	mixed	$options
-	 * @param	mixed	$selected
-	 * @param	mixed	$extra
-	 * @return	string
-	 */
 	function form_country_dropdown($name, $selected = array(), $data = '',  $extra = '', $multiple=false) {
 		$country_list=array(
 			""=>"Select Country",
@@ -696,14 +671,6 @@ class Form {
 			'Zimbabwe'=>'Zimbabwe',
 
 		);
-		
-		/* If model value is exist in country list than add it into it */
-		if(isset($this->model_array[$name])) {
-			if(array_search($this->model_array[$name], $country_list)===false) {
-				$country_list[$this->model_array[$name]]=$this->model_array[$name];
-			}
-		}
-
 		return $this->form_dropdown($name, $country_list, $selected,$data, $extra, $multiple);
 	}
 
@@ -720,69 +687,116 @@ class Form {
 		5 - bydefault selected value in select box or combobox can be array also.
 		6 - other HTML or css attributes.
 		7 - 'SELECT' will be first option or not.
+		8 - Attach attribute to each option tag
+			array('Attribute name','array or string','separator') -
+			ex1. array('data-opt',invoice_value')
+		 	ex2. array('data-opt',array('invoice_value','invoice_numver'),',')
 	*/
-	function form_dropdown_fromdatabase($name,$array,$key,$value,$selected=false,$other=false,$defaultoption="SELECT") {
+	function form_dropdown_fromdatabase($name,$array,$key,$value,$selected=false,$other=false,$defaultoption="SELECT", $datavalue=false) {
 
 		/* Set selected */
 		if (empty($selected) && $this->model_array) {
-
-			if(isset($other['multiple'])) {
-				$selected=$this->set_model_value($name, true);
-			}
-			else {
-				$selected=$this->set_model_value($name);
-			}
+			$selected=$this->set_model_value($name, isset($other['multiple']));
 		}
 
 		$other=$this->_attributes_to_string($other);
 
-		if(empty($array)) {
-			$output = "<select name=\"{$name}\" ".$other.">";
-			if($defaultoption) {
-				$output .= "<option value=\"\">".$defaultoption."</option>";    
-			}
-			$output .= "</select>";
+		$output = "<select name=\"{$name}\" ".$other.">";
+		if($defaultoption) {
+			$output .= "<option value=\"\">SELECT</option>";    
 		}
-		else{  
-			$output = "<select name=\"{$name}\" ".$other.">";
-			if($defaultoption) {
-				$output .= "<option value=\"\">".$defaultoption."</option>";    
+
+		if(empty($array)) {
+			$output .= "</select>";
+			return $output;
+		}
+		
+		$keys=array_column($array,$key);
+		$sap_char=' ';			
+		if(is_array($value)) {
+			$args=array();
+			$args[]="combine";
+			foreach($value as $val) {
+				$args[]=array_column($array,$val);
 			}
-			$keys=array_column($array,$key);
-			if(is_array($value)) {
-				$args=array();
-				$args[]="$this->combine";
-				foreach($value as $val) {
-					$args[]=array_column($array,$val);
+			
+			/* pass separator array */
+			foreach ($args[1] as $key=>$value) {
+				$saperator[$key]=$sap_char;
+			}
+			$args[]=$saperator;
+			$vals=call_user_func_array('array_map',$args);
+		}
+		else {
+			$vals=array_column($array,$value);
+		}
+		$new_array=array_combine($keys,$vals);
+
+		$opt_attr=array();
+
+		/* for setting extra attribute with dynamic value */
+		if($datavalue) {
+			/* attribute name */
+			$attr=$datavalue[0];
+			/* attribute value column */
+			$attr_value=$datavalue[1];
+			/* create separator array */
+			$data_saperator=array();
+
+			/* if multiple column value need to supply */
+			if(is_array($attr_value)) {
+				/* column value separator  */
+				$datasap_char=$datavalue[2];
+				$val_columns=array();
+				$val_columns[]="combine";
+
+				/* add each column value into val column */
+				foreach($attr_value as $attr_val) {
+					$val_columns[]=array_column($array,$attr_val);
 				}
-				$vals=call_user_func_array('array_map',$args);
+
+				/* pass separator array */
+				foreach ($attr_value as $key=>$blank) {
+					$data_saperator[$key]=$datasap_char;
+				}
+				$val_columns[]=$data_saperator;
+
+				/* combine multiple column in to string */
+				$opt_attr=call_user_func_array('array_map',$val_columns);
+				
 			}
 			else {
-				$vals=array_column($array,$value);
+				$opt_attr=array_column($array,$attr_value);
 			}
-			$new_array=array_combine($keys,$vals);
-
-			foreach ($new_array as $key => $value) {
-				if(is_array($selected)) {
-					if (in_array($key,$selected)) {
-						$output .= "<option value=\"{$key}\" selected>{$value}</option>";
-					} 
-					else {
-						$output .= "<option value=\"{$key}\">{$value}</option>";
-					}
-				}
-				else {
-					if ($selected !== false && $selected == $key) {
-						$output .= "<option value=\"{$key}\" selected>{$value}</option>";
-					} 
-					else {
-						$output .= "<option value=\"{$key}\">{$value}</option>";
-					}
-				}
-			}
-
-			$output .= "</select>";
 		}
+
+		$k=0;
+		foreach ($new_array as $key => $value) {
+			$str_attr='';
+			if($datavalue) {
+				$str_attr=' '.$datavalue[0].'="'.$opt_attr[$k].'" ';
+			}
+			if(is_array($selected)) {
+				if (in_array($key,$selected)) {
+					$output .= "<option value=\"{$key}\" ".$str_attr." selected>{$value}</option>";
+				} 
+				else {
+					$output .= "<option value=\"{$key}\" ".$str_attr.">{$value}</option>";
+				}
+			}
+			else {
+				if ($selected !== false && $selected == $key) {
+					$output .= "<option value=\"{$key}\" ".$str_attr." selected>{$value}</option>";
+				} 
+				else {
+					$output .= "<option value=\"{$key}\" ".$str_attr.">{$value}</option>";
+				}
+			}
+			$k++;
+		}
+
+		$output .= "</select>";
+		
 		return $output;
 	}
 
@@ -1035,13 +1049,13 @@ class Form {
 	 *
 	 * Formats text so that it can be safely placed in a form field in the event it has HTML tags.
 	 *
-	 * @deprecated	3.0.0	An alias for html_escape()
+	 * @deprecated	3.0.0	An alias for $this->html_escape()
 	 * @param	string|string[]	$str		Value to escape
 	 * @return	string|string[]	Escaped values
 	 */
 	function form_prep($str)
 	{
-		return html_escape($str, TRUE);
+		return $this->html_escape($str, TRUE);
 	}
 
 // ------------------------------------------------------------------------
@@ -1081,7 +1095,7 @@ class Form {
 		{
 			if ($key === 'value')
 			{
-				$val = html_escape($val);
+				$val = $this->html_escape($val);
 			}
 			elseif ($key === 'name' && ! strlen($default['name']))
 			{
@@ -1138,7 +1152,7 @@ class Form {
 	}
 
 	/**
-	* Return value of field from $model_array for input type text, passoword, textarea etc
+	* Return value of field from $model_array for input type text, passoword, textarea
 	* @param field name
 	* @return string 
 	*/
@@ -1153,7 +1167,7 @@ class Form {
 			/* If name contain contain array sign ex. name[] or name[key] */
 			elseif((preg_match_all('/\[(.*?)\]/', $name, $matches))) {
 				/* If  name[] is exist*/
-				if(empty($matches[1][0])) {
+				if(empty($matches[1][0]) && $matches[1][0]!='0') {
 					/* Remove [] bracket from $name to extract name from $model_array */
 					$ele_name=substr($name,0, -2);
 					/* If is array than assign child of that array */
@@ -1187,13 +1201,13 @@ class Form {
 						$ele_name=str_replace($matches_str,'',$name);
 						if(isset($this->model_array[$ele_name])) {
 							$element=$this->model_array[$ele_name];
+							$data['value']='';
 							/* Loop through each matched string to get child value */
 							foreach ($matches[1] as $matches_val) {
 								if(isset($element[$matches_val])) {
-									$element=$element[$matches_val];
+									$data['value']=$element[$matches_val];
 								}
 							}
-							$data['value']=$element;
 						}
 					}
 				}
@@ -1203,10 +1217,6 @@ class Form {
 		return $data['value'];
 	}
 
-	/**
-	*
-	* Used on form_dropdown_fromdatabase()
-	 */
 	function combine() {
 		$args=func_get_args();
 		$return='';
@@ -1217,13 +1227,26 @@ class Form {
 		 return $return;
 	}
 
-	/**
-	*Used to clean model array, used in form_close();
-	*
-	*/
-
 	function clear_model() {
 		$this->model_array=false;
 	}
 
+	function html_escape($var, $double_encode = TRUE) {
+		if (empty($var))
+		{
+			return $var;
+		}
+
+		if (is_array($var))
+		{
+			foreach (array_keys($var) as $key)
+			{
+				$var[$key] = $this->html_escape($var[$key], $double_encode);
+			}
+
+			return $var;
+		}
+
+		return htmlspecialchars($var, ENT_QUOTES,null, $double_encode);
+	}
 }
