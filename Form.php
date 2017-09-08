@@ -21,18 +21,22 @@ public $model_array=false;
 			$attributes .= ' method="post"';
 		}
 
-		/*if (stripos($attributes, 'accept-charset=') === FALSE)
-		{
-			$attributes .= ' accept-charset="'.strtolower(config_item('charset')).'"';
-		}*/
+		//if codeigniter is there
+		if (function_exists('get_instance')) {
+			$CI =& get_instance();
+			if (stripos($attributes, 'accept-charset=') === FALSE)
+			{
+				$attributes .= ' accept-charset="'.strtolower(config_item('charset')).'"';
+			}
+
+			// Add CSRF field if enabled, but leave it out for GET requests and requests to external websites
+			if ($CI->config->item('csrf_protection') === TRUE && strpos($action, $CI->config->base_url()) !== FALSE && ! stripos($form, 'method="get"'))
+			{
+				$hidden[$CI->security->get_csrf_token_name()] = $CI->security->get_csrf_hash();
+			}
+		}
 
 		$form = '<form action="'.$action.'"'.$attributes.">\n";
-
-		// Add CSRF field if enabled, but leave it out for GET requests and requests to external websites
-		/*if ($CI->config->item('csrf_protection') === TRUE && strpos($action, $CI->config->base_url()) !== FALSE && ! stripos($form, 'method="get"'))
-		{
-			$hidden[$CI->security->get_csrf_token_name()] = $CI->security->get_csrf_hash();
-		}*/
 
 		if (is_array($hidden))
 		{
