@@ -1,5 +1,6 @@
 # Formlib
-PHP Form control generation library with database result array model binding.
+The Formlib file contains functions that assist in working with forms and filling data in form input by passing array as database result.
+
 
 ## What is Form Model Binding?
 
@@ -9,18 +10,23 @@ With Form Model Binding, your edit forms are automatically populated based on th
 
 ## Inspired from Laravel
 
-First i see this feature in laravel  [here](https://laravel.com/docs/4.2/html#form-model-binding), Its awesome feature you just need pass the database result object and formLibrary automatically fill the form input. Mostly for quick development purpose i preper codeigniter so here is stand alone solution for formModel binding.
+First i see this feature in laravel  [here](https://laravel.com/docs/4.2/html#form-model-binding), Its awesome feature you just need pass the database result object and Form Library automatically populate the form input based on field name and result object. 
 
-## Inherited from Codeigniter
-I Fill more comfitable with codeigniter, codeigniter has [formHelper library](https://www.codeigniter.com/userguide3/helpers/form_helper.html) which full fill all form generation needs, so i just copy the form library and modify it according to needs. this library inherited from codeiniter form_helper so no need for detailed documentation you can view detailed documentation form [form_helper here](https://www.codeigniter.com/userguide3/helpers/form_helper.html). I given more focus to input name so every function's first argument contain input name here is example. 
-	`required_once('Form.php');
+Mostly for quick development purpose i prefer codeigniter and there is no concept in codeigniter for model binding, so here is stand alone solution for formModel binding, you can use this with codeigniter as well as with core PHP or any other framework.
+
+## Inherited from Codeigniter [formHelper](https://www.codeigniter.com/userguide3/helpers/form_helper.html)
+I Fill more comfortable with codeigniter, its has [formHelper](https://www.codeigniter.com/userguide3/helpers/form_helper.html), which full fill all form generation needs, so i just copy the form helper and modify it according to needs. 
+
+Formlib inherited from codeigniter form_helper so no need for detailed documentation you can view detailed documentation on [form_helper here](https://www.codeigniter.com/userguide3/helpers/form_helper.html). I given more focus to input name so every function's first argument contain input name here is example. 
+	
+	required_once('Form.php');
 	$form=new Form();`
 
 	$data = array(
-		        'id'            => 'username',
-		        'class'         => 'form-control',
-		        'maxlength'     => '100'
-			);
+        'id'            => 'username',
+        'class'         => 'form-control',
+        'maxlength'     => '100'
+	);
 
 	echo $form->form_input('username',$data);
 
@@ -34,12 +40,23 @@ Mostly prefer to use form_model function instad of using form_open or form_open_
 
 For more detail usage checkout the examples in example folder
 
-## Custom Function Reference
+## Function Reference
 
-function | Description | Example 
----------|-------------|---------
-form_model([$model_array=array() [, $action = ''[, $attributes = array()[, $hidden = array()]]]])| An HTML multipart form opening tag with model binding initializing | $form->form_model($model_array,'submit.php');
-form_country_dropdown($name, $selected = array(), $option = '',  $extra = '', $multiple=false)|Generate Country dropdown/ Select list| $form('country','',array('class'=>'form-control'))
-form_dropdown_fromdatabase($name,$option_list,$key,$value,$selected=false,$other=false,$defaultoption="SELECT") | Generate Select box directly from database array result| $form->form_dropdown_fromdatabase('users_list',$database_array,'user_id','username','', array('class'=>'form-control'))
+	form_model($model_array=array(), $action_url = '', $extra_attributes = array(), $hidden = array() )
+	form_open_multipart($action = '', $attributes = array(), $hidden = array())
+	form_hidden($name, $value = '', $recursing = FALSE)
+	form_input($name, $data = '', $value = '', $extra = '')
+	form_password($name, $data = '', $value = '', $extra = '')
+	form_upload($name, $data = '', $value = '', $extra = '')
+	form_textarea($name, $data = '', $value = '', $extra = '')
+	form_multiselect($name, $options = array(), $selected = array(), $data='',  $extra = '')
+	form_dropdown($name, $options = array(), $selected = array(), $data = '',  $extra = '', $multiple=false)
+	form_country_dropdown($name, $selected = array(), $data = '',  $extra = '', $multiple=false)
+	form_dropdown_fromdatabase($name,$array,$key,$value,$selected=false,$other=false,$defaultoption="SELECT", $datavalue=false)
+	form_checkbox($name, $value = '', $data = '', $checked = FALSE, $extra = '')
+	form_radio($name, $value = '', $data = '',  $checked = FALSE, $extra = '')
+	form_submit($data = '', $value = '', $extra = '')
+	form_close($extra = '')
 
-Its highly Recommened to read codeiniter documentation for form_helper from [HERE](https://www.codeigniter.com/userguide3/helpers/form_helper.html)
+
+Its highly Recommended to read codeigniter documentation for form_helper from [HERE](https://www.codeigniter.com/userguide3/helpers/form_helper.html)
