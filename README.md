@@ -34,9 +34,43 @@ Will proceed
 	`<input type="text" name="username" id="username" class="form-control" maxlength="100" />`
 
 ## Form model Example
-To use form's model binding functionality, Use function form_model function for form open tag, form_model accept model array as first argument.
+To use form's model binding functionality, Use function form_model function for form open tag, form_model accept model array as first argument. Check below function argument of form_model
+		
+	form_model($model_array=array(), $action_url = '', $extra_attributes = array(), $hidden = array() )
 
-Mostly prefer to use form_model function instad of using form_open or form_open_multipart, If you are not using binding just pass blank array.
+form_model will return `<form>` tag with specified attribute.
+
+Make sure that $model_array is contain element with same name as given to fields, formLib is fill the fields based on array element name and field name. check below example.
+
+	<?php 
+		required_once('Form.php');
+		$form=new Form();
+
+		$model_array=array(
+			'full_name'=>'Naran Arethiya',
+			'email_address'=>'email.naran@gmail.com'
+		);
+		/* Form Opening tag  */
+		echo $form->form_model($model_array, 'submit.php');
+	
+        $attribute=array(
+            'class'=>'form-control',
+            'placeholder'=>"First name"
+        );
+        echo $form_obj->form_input('first_name',$attribute);
+
+        $attribute=array(
+            'ype'=>'email',
+            'class'=>'form-control',
+            'placeholder'=>"Email"
+        );
+        echo $form_obj->form_input('email_address',$attribute);
+
+        /* Form Closing tag  */
+    	echo $form->form_close(); 
+    ?>
+
+In above example fields first_name and email_address will get filled with 'Naran Arethiya' and 'email.naran@gmail.com' respectively.
 
 For more detail usage checkout the examples in example folder
 

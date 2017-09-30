@@ -7,7 +7,9 @@
     and $form_model variable will get filled in form */
 
     if(isset($_GET['set_data']) && $_GET['set_data']=='1') {
-        /* Form model array for filling data */
+        /* Form model array for filling data 
+            Make sure that array key name and field name should be same
+        */
         $form_model=array(
             'first_name'=>'Naran',
             'last_name'=>'Arethiya',
@@ -37,8 +39,17 @@
 </head>
 <body>
     <div class="container">
+        
         <?php echo $form_obj->form_model($form_model, 'submit.php'); ?>
-            <h2>Contact Us</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>User Registration Us 
+                        <small style="float: right">
+                            <a href="index.php?set_data=1">Click here Fill Form with form_model</a>
+                        </small>
+                    </h2>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
