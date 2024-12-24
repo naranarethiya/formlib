@@ -27,8 +27,6 @@ jobs:
       # Step 1: Checkout the repository provided by the user
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          repository: ${{ github.event.inputs.repo_path }}
 
       # Step 2: Install dependencies (rsync, sshpass)
       - name: Install dependencies
