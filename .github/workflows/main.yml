@@ -1,0 +1,49 @@
+name: Deploy Repository via rsync
+
+on:
+  workflow_dispatch:
+    inputs:
+      ssh_user:
+        description: "The SSH username"
+        required: true
+      ssh_password:
+        description: "The SSH password"
+        required: true
+      remote_host:
+        description: "The remote host (IP or domain)"
+        required: true
+      remote_dir:
+        description: "The remote directory where the files will be synchronized"
+        required: true
+      repo_path:
+        description: "The path to the repository"
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository provided by the user
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ github.event.inputs.repo_path }}
+
+      # Step 2: Install dependencies (rsync, sshpass)
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rsync sshpass
+
+      # Step 3: Deploy files via rsync
+      - name: Deploy files via rsync
+        env:
+          SSH_USER: ${{ github.event.inputs.ssh_user }}
+          SSH_PASSWORD: ${{ github.event.inputs.ssh_password }}
+          REMOTE_HOST: ${{ github.event.inputs.remote_host }}
+          REMOTE_DIR: ${{ github.event.inputs.remote_dir }}
+        run: |
+          # Use sshpass to run rsync with password authentication
+          sshpass -p "$SSH_PASSWORD" rsync -avz --delete ./ "$SSH_USER"@"$REMOTE_HOST":"$REMOTE_DIR"
+          
