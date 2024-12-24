@@ -44,4 +44,6 @@ jobs:
         run: |
           # Use sshpass to run rsync with password authentication
           sshpass -p "$SSH_PASSWORD" rsync -avz --delete ./ "$SSH_USER"@"$REMOTE_HOST":"$REMOTE_DIR"
+          sshpass -p "$SSH_PASSWORD" rsync -avz -e "ssh -o StrictHostKeyChecking=no" --delete ./ "$SSH_USER"@"$REMOTE_HOST":"$REMOTE_DIR"
+
           
