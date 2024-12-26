@@ -26,4 +26,3 @@ jobs:
           ssh_user: ${{ github.event.inputs.ssh_user }}
           ssh_password: ${{ github.event.inputs.ssh_password }}
           remote_host: ${{ github.event.inputs.remote_host }}
-          remote_dir: "/home/client_62733a344a/html/test/"
