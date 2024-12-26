@@ -14,40 +14,16 @@ on:
         description: "The remote host (IP or domain)"
         required: true
         default: 'j6o.b29.myftpupload.com'
-      remote_dir:
-        description: "The remote directory where the files will be synchronized"
-        required: true
-        default: '/home/client_62733a344a/html/test/'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository provided by the user
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      # Step 2: Install dependencies (rsync, sshpass)
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y rsync sshpass
-
-      - name: Add remote host to known_hosts
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -H ${{ github.event.inputs.remote_host }} >> ~/.ssh/known_hosts
-
-      # Step 3: Deploy files via rsync
-      - name: Deploy files via rsync
-        env:
-          SSH_USER: ${{ github.event.inputs.ssh_user }}
-          SSH_PASSWORD: ${{ github.event.inputs.ssh_password }}
-          REMOTE_HOST: ${{ github.event.inputs.remote_host }}
-          REMOTE_DIR: ${{ github.event.inputs.remote_dir }}
-        run: |
-          # Use sshpass to run rsync with password authentication
-          sshpass -p "$SSH_PASSWORD" rsync -avz --delete --exclude='.git' ./ "$SSH_USER"@"$REMOTE_HOST":"$REMOTE_DIR"
-
-          
+      - name: Deploy files
+        uses: narethiya-godaddy/git-deploy-poc@v0.0.1
+        with:
+          ssh_user: ${{ github.event.inputs.ssh_user }}
+          ssh_password: ${{ github.event.inputs.ssh_password }}
+          remote_host: ${{ github.event.inputs.remote_host }}
+          remote_dir: "/home/client_62733a344a/html/test/"
